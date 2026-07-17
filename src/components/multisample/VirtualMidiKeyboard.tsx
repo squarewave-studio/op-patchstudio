@@ -5,6 +5,7 @@ import { MidiDeviceSelector } from '../common/MidiDeviceSelector';
 import type { MidiEvent } from '../../utils/midi';
 import { useAppContext } from '../../context/AppContext';
 import { UI_CONSTANTS } from '../../utils/constants';
+import { extractDroppedAudioFiles, hasDroppedFiles } from '../../utils/fileDrop';
 
 interface VirtualMidiKeyboardProps {
   assignedNotes?: number[]; // MIDI note numbers that have samples assigned
@@ -470,7 +471,7 @@ export function VirtualMidiKeyboard({
   const handleKeyDragOver = useCallback((e: React.DragEvent, midiNote: number) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.dataTransfer.types.includes('Files')) {
+    if (hasDroppedFiles(e.dataTransfer)) {
       setDragOverKey(midiNote);
     }
   }, []);
@@ -481,14 +482,13 @@ export function VirtualMidiKeyboard({
     setDragOverKey(null);
   }, []);
 
-  const handleKeyDrop = useCallback((e: React.DragEvent, midiNote: number) => {
+  const handleKeyDrop = useCallback(async (e: React.DragEvent, midiNote: number) => {
     e.preventDefault();
     e.stopPropagation();
     setDragOverKey(null);
     
-    const files = Array.from(e.dataTransfer.files);
-    const wavFiles = files.filter(file => 
-      file.type === 'audio/wav' || file.name.toLowerCase().endsWith('.wav')
+    const wavFiles = (await extractDroppedAudioFiles(e.dataTransfer)).filter(file =>
+      file.name.toLowerCase().endsWith('.wav') || file.type === 'audio/wav'
     );
     
     if (wavFiles.length > 0) {
@@ -1281,4 +1281,4 @@ export function VirtualMidiKeyboard({
       </div>
     </>
   );
-} 
+}

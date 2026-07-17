@@ -10,6 +10,7 @@ import { FileDetailsBadges } from '../common/FileDetailsBadges';
 import { DrumSampleSettingsModal } from './DrumSampleSettingsModal';
 import { IconButton } from '../common/IconButton';
 import { getOrganizeModeLabelFull } from './DrumKeyboard';
+import { extractDroppedAudioFiles } from '../../utils/fileDrop';
 
 
 interface DrumSampleTableProps {
@@ -117,14 +118,11 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample, i
     e.stopPropagation();
   };
 
-  const handleDrop = (e: React.DragEvent, index: number) => {
+  const handleDrop = async (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const files = Array.from(e.dataTransfer.files);
-    const audioFile = files.find(file => 
-      file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-    );
+    const [audioFile] = await extractDroppedAudioFiles(e.dataTransfer);
     
     if (audioFile) {
       handleFileSelect(index, audioFile);
@@ -150,11 +148,11 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample, i
     setHoveredIndex(null);
   };
 
-  const handleSampleDrop = (e: React.DragEvent, targetIndex: number) => {
+  const handleSampleDrop = async (e: React.DragEvent, targetIndex: number) => {
     e.preventDefault();
     
     // Check if this is a file drop (external files)
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('audio/'));
+    const files = await extractDroppedAudioFiles(e.dataTransfer);
     if (files.length) {
       files.forEach((file, i) => handleFileSelect(targetIndex + i, file));
     }
@@ -781,4 +779,4 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample, i
       />
     </div>
   );
-} 
+}

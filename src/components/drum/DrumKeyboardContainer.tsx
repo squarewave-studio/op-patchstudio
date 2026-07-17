@@ -6,6 +6,7 @@ import { MidiDeviceSelector } from '../common/MidiDeviceSelector';
 import { cookieUtils, COOKIE_KEYS } from '../../utils/cookies';
 import { useWebMidi } from '../../hooks/useWebMidi';
 import type { MidiEvent } from '../../utils/midi';
+import { extractDroppedAudioFiles } from '../../utils/fileDrop';
 
 interface DrumKeyboardContainerProps {
   onFileUpload?: (index: number, file: File) => void;
@@ -442,15 +443,13 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 e.currentTarget.style.borderColor = 'var(--color-border-medium)';
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
-              onDrop={(e) => {
+              onDrop={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 e.currentTarget.style.borderColor = 'var(--color-border-medium)';
                 e.currentTarget.style.backgroundColor = 'transparent';
 
-                const files = Array.from(e.dataTransfer.files).filter(
-                  (file) => file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-                );
+                const files = await extractDroppedAudioFiles(e.dataTransfer);
 
                 // White key indices for both octaves (A, S, D, F, G, H, J)
                 const whiteKeyIndices = [
@@ -522,15 +521,13 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 e.currentTarget.style.borderColor = 'var(--color-border-medium)';
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
-              onDrop={(e) => {
+              onDrop={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 e.currentTarget.style.borderColor = 'var(--color-border-medium)';
                 e.currentTarget.style.backgroundColor = 'transparent';
 
-                const files = Array.from(e.dataTransfer.files).filter(
-                  (file) => file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-                );
+                const files = await extractDroppedAudioFiles(e.dataTransfer);
 
                 // Black key indices for both octaves (W, E, R, Y, U)
                 const blackKeyIndices = [
@@ -590,4 +587,4 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
       </div>
     </>
   );
-}; 
+};
