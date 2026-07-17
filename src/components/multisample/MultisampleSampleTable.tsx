@@ -7,6 +7,7 @@ import { WaveformZoomModal } from '../common/WaveformZoomModal';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 
 import { midiNoteToString, noteStringToMidiValue } from '../../utils/audio';
+import { extractDroppedAudioFiles, getDropEffect, hasDroppedFiles, isAudioFile } from '../../utils/fileDrop';
 
 
 interface MultisampleSampleTableProps {
@@ -101,7 +102,7 @@ export function MultisampleSampleTable({
   const handleTableDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.dataTransfer.types.includes('Files')) {
+    if (hasDroppedFiles(e.dataTransfer)) {
       setIsDragOver(true);
     }
   };
@@ -119,38 +120,7 @@ export function MultisampleSampleTable({
     e.stopPropagation();
     setIsDragOver(false);
     
-    const files: File[] = [];
-    
-    // Use the .items property for robust folder and file handling
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      const items = Array.from(e.dataTransfer.items);
-      
-      // Process all dropped items in parallel
-      const processingPromises = items.map(item => {
-        const entry = item.webkitGetAsEntry();
-        if (entry) {
-          return processEntry(entry, files);
-        }
-        return Promise.resolve();
-      });
-      
-      await Promise.all(processingPromises);
-      
-    } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      // Fallback for browsers that don't support .items
-      files.push(...Array.from(e.dataTransfer.files));
-    }
-    
-    const audioFiles = files.filter(file => 
-      file.type.startsWith('audio/') || 
-      file.name.toLowerCase().endsWith('.wav') ||
-      file.name.toLowerCase().endsWith('.aif') ||
-      file.name.toLowerCase().endsWith('.aiff') ||
-      file.name.toLowerCase().endsWith('.mp3') ||
-      file.name.toLowerCase().endsWith('.m4a') ||
-      file.name.toLowerCase().endsWith('.ogg') ||
-      file.name.toLowerCase().endsWith('.flac')
-    );
+    const audioFiles = await extractDroppedAudioFiles(e.dataTransfer);
     
     const remainingSlots = 24 - state.multisampleFiles.length;
     const filesToProcess = audioFiles.slice(0, remainingSlots);
@@ -171,63 +141,6 @@ export function MultisampleSampleTable({
       }
       
       onFilesSelected(filesToProcess);
-    } else if (files.length > 0) {
-      // No audio files found in dropped items - can provide user feedback if desired
-    } else {
-      // No files found in drop event
-    }
-  };
-
-  const processEntry = async (entry: any, files: File[]): Promise<void> => {
-    try {
-      if (entry.isFile) {
-        const file = await new Promise<File>((resolve, reject) => {
-          entry.file((file: File) => {
-            if (file) {
-              resolve(file);
-            } else {
-              reject(new Error('Failed to get file from entry'));
-            }
-          });
-        });
-        files.push(file);
-      } else if (entry.isDirectory) {
-        const reader = entry.createReader();
-        
-        // Read all entries from the directory
-        const readEntries = (): Promise<any[]> => {
-          return new Promise((resolve, reject) => {
-            reader.readEntries((entries: any[]) => {
-              if (entries && entries.length > 0) {
-                resolve(entries);
-              } else {
-                resolve([]);
-              }
-            }, (error: any) => {
-              console.error('Error reading directory entries:', error);
-              reject(error);
-            });
-          });
-        };
-        
-        // Read all entries recursively (handle large directories)
-        let allEntries: any[] = [];
-        let hasMore = true;
-        
-        while (hasMore) {
-          const entries = await readEntries();
-          if (entries.length === 0) {
-            hasMore = false;
-          } else {
-            allEntries = allEntries.concat(entries);
-          }
-        }
-        
-        // Process all entries in parallel for better performance
-        await Promise.all(allEntries.map(childEntry => processEntry(childEntry, files)));
-      }
-    } catch (error) {
-      console.error('Error processing entry:', entry?.name, error);
     }
   };
 
@@ -244,7 +157,7 @@ export function MultisampleSampleTable({
   const handleBrowseFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
-      const audioFiles = await extractAudioFiles(files);
+      const audioFiles = files.filter(isAudioFile);
       const remainingSlots = 24 - state.multisampleFiles.length;
       const filesToProcess = audioFiles.slice(0, remainingSlots);
       
@@ -269,25 +182,6 @@ export function MultisampleSampleTable({
       }
     }
     e.target.value = '';
-  };
-
-  const extractAudioFiles = async (files: File[]): Promise<File[]> => {
-    const audioFiles: File[] = [];
-    
-    for (const file of files) {
-      if (file.type.startsWith('audio/') || 
-          file.name.toLowerCase().endsWith('.wav') ||
-          file.name.toLowerCase().endsWith('.aif') ||
-          file.name.toLowerCase().endsWith('.aiff') ||
-          file.name.toLowerCase().endsWith('.mp3') ||
-          file.name.toLowerCase().endsWith('.m4a') ||
-          file.name.toLowerCase().endsWith('.ogg') ||
-          file.name.toLowerCase().endsWith('.flac')) {
-        audioFiles.push(file);
-      }
-    }
-    
-    return audioFiles;
   };
 
   const handleEmptyAreaClick = () => {
@@ -350,7 +244,7 @@ export function MultisampleSampleTable({
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = getDropEffect(e.dataTransfer);
     setHoveredIndex(index);
   };
 
@@ -441,21 +335,11 @@ export function MultisampleSampleTable({
     e.stopPropagation();
   };
 
-  const handleRowDrop = (e: React.DragEvent, index: number) => {
+  const handleRowDrop = async (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const files = Array.from(e.dataTransfer.files);
-    const audioFile = files.find(file => 
-      file.type.startsWith('audio/') || 
-      file.name.toLowerCase().endsWith('.wav') ||
-      file.name.toLowerCase().endsWith('.aif') ||
-      file.name.toLowerCase().endsWith('.aiff') ||
-      file.name.toLowerCase().endsWith('.mp3') ||
-      file.name.toLowerCase().endsWith('.m4a') ||
-      file.name.toLowerCase().endsWith('.ogg') ||
-      file.name.toLowerCase().endsWith('.flac')
-    );
+    const [audioFile] = await extractDroppedAudioFiles(e.dataTransfer);
     
     if (audioFile) {
       handleFileInputChange(index, { target: { files: [audioFile] } } as any);

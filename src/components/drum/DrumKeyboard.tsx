@@ -5,6 +5,7 @@ import { useWebMidi } from '../../hooks/useWebMidi';
 import type { MidiEvent } from '../../utils/midi';
 import type { WebMidiState, WebMidiHookReturn } from '../../hooks/useWebMidi';
 import { UI_CONSTANTS } from '../../utils/constants';
+import { extractDroppedAudioFiles } from '../../utils/fileDrop';
 
 
 // Drum key mapping for two octaves (matching legacy)
@@ -668,7 +669,7 @@ export function DrumKeyboard({ onFileUpload, selectedMidiChannel, midiState: ext
             e.currentTarget.style.boxShadow = isActive ? '0 4px 12px rgba(0, 0, 0, 0.18)' : '0 2px 6px rgba(0, 0, 0, 0.1)';
             e.currentTarget.style.borderColor = !isActive ? 'var(--color-key-inactive-border)' : 'var(--color-black)';
           }}
-          onDrop={(e) => {
+          onDrop={async (e) => {
             e.preventDefault();
             e.stopPropagation();
             
@@ -678,10 +679,7 @@ export function DrumKeyboard({ onFileUpload, selectedMidiChannel, midiState: ext
             e.currentTarget.style.boxShadow = isActive ? '0 4px 12px rgba(0, 0, 0, 0.18)' : '0 2px 6px rgba(0, 0, 0, 0.1)';
             e.currentTarget.style.borderColor = !isActive ? 'var(--color-key-inactive-border)' : 'var(--color-black)';
             
-            const files = Array.from(e.dataTransfer.files);
-            const audioFile = files.find(file => 
-              file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-            );
+            const [audioFile] = await extractDroppedAudioFiles(e.dataTransfer);
             
             if (audioFile && mapping && onFileUpload) {
               onFileUpload(mapping.idx, audioFile);
@@ -1102,4 +1100,4 @@ export function DrumKeyboard({ onFileUpload, selectedMidiChannel, midiState: ext
       )}
     </div>
   );
-} 
+}

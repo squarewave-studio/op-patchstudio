@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Button } from '@carbon/react';
 import type { DragEvent, ChangeEvent } from 'react';
+import { extractDroppedAudioFiles } from '../../utils/fileDrop';
 
 interface FileDropZoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -28,23 +29,13 @@ export function FileDropZone({
     e.stopPropagation();
   };
 
-  const handleDrop = (e: DragEvent) => {
+  const handleDrop = async (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (disabled) return;
     
-    const files = Array.from(e.dataTransfer.files);
-    const audioFiles = files.filter(file => 
-      file.type.startsWith('audio/') || 
-      file.name.toLowerCase().endsWith('.wav') ||
-      file.name.toLowerCase().endsWith('.aif') ||
-      file.name.toLowerCase().endsWith('.aiff') ||
-      file.name.toLowerCase().endsWith('.mp3') ||
-      file.name.toLowerCase().endsWith('.m4a') ||
-      file.name.toLowerCase().endsWith('.ogg') ||
-      file.name.toLowerCase().endsWith('.flac')
-    );
+    const audioFiles = await extractDroppedAudioFiles(e.dataTransfer);
     
     if (audioFiles.length > 0) {
       onFilesSelected(audioFiles);
@@ -128,4 +119,4 @@ export function FileDropZone({
       </div>
     </>
   );
-} 
+}
