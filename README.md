@@ -147,8 +147,6 @@ npm run build
 npm run test
 ```
 
-See [TESTING.md](TESTING.md) for the pull request gate, coverage guidance, and testing roadmap.
-
 ### project structure
 
 ```
