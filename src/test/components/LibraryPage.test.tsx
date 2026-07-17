@@ -1,11 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { LibraryPage } from '../../components/library/LibraryPage';
 import { indexedDB } from '../../utils/indexedDB';
 import { sessionStorageIndexedDB } from '../../utils/sessionStorageIndexedDB';
 import { generateDrumPatch, generateMultisamplePatch, downloadBlob } from '../../utils/patchGeneration';
 import type { LibraryPreset } from '../../utils/libraryUtils';
 import { AUDIO_CONSTANTS } from '../../utils/constants';
+
+const { mockAppDispatch } = vi.hoisted(() => ({
+  mockAppDispatch: vi.fn()
+}));
 
 // Mock dependencies
 vi.mock('../../utils/indexedDB', () => ({
@@ -86,7 +90,7 @@ vi.mock('../../context/AppContext', () => ({
       isSessionRestorationModalOpen: false,
       sessionInfo: null
     },
-    dispatch: vi.fn(),
+    dispatch: mockAppDispatch,
   }),
 }));
 
@@ -243,6 +247,15 @@ describe('LibraryPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Drum Kit 1')).toBeInTheDocument();
       });
+      await waitFor(() => {
+        expect(mockIndexedDB.getAll).toHaveBeenCalledTimes(2);
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('loading...')).not.toBeInTheDocument();
+      });
+      await waitFor(() => {
+        expect(within(screen.getByRole('table')).getAllByRole('checkbox')).toHaveLength(mockPresets.length + 1);
+      });
     });
 
     it('should filter presets by search term', async () => {
@@ -394,10 +407,19 @@ describe('LibraryPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Drum Kit 1')).toBeInTheDocument();
       });
+      await waitFor(() => {
+        expect(mockIndexedDB.getAll).toHaveBeenCalledTimes(2);
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('loading...')).not.toBeInTheDocument();
+      });
+      await waitFor(() => {
+        expect(within(screen.getByRole('table')).getAllByRole('checkbox')).toHaveLength(mockPresets.length + 1);
+      });
     });
 
     it('should select and deselect individual presets', async () => {
-      const checkboxes = screen.getAllByRole('checkbox');
+      const checkboxes = within(screen.getByRole('table')).getAllByRole('checkbox');
       const firstPresetCheckbox = checkboxes[1]; // Skip the "select all" checkbox
       
       fireEvent.click(firstPresetCheckbox);
@@ -408,29 +430,34 @@ describe('LibraryPage', () => {
     });
 
     it('should select all presets', async () => {
-      const selectAllCheckbox = screen.getAllByRole('checkbox')[0];
+      const selectAllCheckbox = within(screen.getByRole('table')).getAllByRole('checkbox')[0];
       fireEvent.click(selectAllCheckbox);
 
-      const allCheckboxes = screen.getAllByRole('checkbox');
+      const allCheckboxes = within(screen.getByRole('table')).getAllByRole('checkbox');
       allCheckboxes.forEach(checkbox => {
         expect(checkbox).toBeChecked();
       });
     });
 
-    it('should clear selection', async () => {
+    it('should clear selection after confirming a bulk delete', async () => {
       // Select some presets
-      const checkboxes = screen.getAllByRole('checkbox');
+      const checkboxes = within(screen.getByRole('table')).getAllByRole('checkbox');
       fireEvent.click(checkboxes[1]);
       fireEvent.click(checkboxes[2]);
 
-      // Clear selection
       const clearButton = screen.getByText('delete');
       fireEvent.click(clearButton);
+      fireEvent.click(screen.getByText('ok'));
 
-      // Checkboxes should be unchecked
-      const allCheckboxes = screen.getAllByRole('checkbox');
-      allCheckboxes.forEach(checkbox => {
-        expect(checkbox).not.toBeChecked();
+      await waitFor(() => {
+        expect(mockIndexedDB.delete).toHaveBeenCalledWith('presets', 'preset-1');
+        expect(mockIndexedDB.delete).toHaveBeenCalledWith('presets', 'preset-2');
+      });
+      await waitFor(() => {
+        const allCheckboxes = within(screen.getByRole('table')).getAllByRole('checkbox');
+        allCheckboxes.forEach(checkbox => {
+          expect(checkbox).not.toBeChecked();
+        });
       });
     });
   });
@@ -505,4 +532,4 @@ describe('LibraryPage', () => {
       window.AudioContext = originalAudioContext;
     });
   });
-}); 
+});

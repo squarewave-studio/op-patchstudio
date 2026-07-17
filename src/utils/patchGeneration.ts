@@ -118,7 +118,7 @@ export async function generateDrumPatch(
   patchJson.regions = [];
 
   // Merge imported preset settings if they exist
-  mergeImportedDrumSettings(patchJson, (state as any).importedDrumPresetJson);
+  mergeImportedDrumSettings(patchJson, state.importedDrumPreset);
 
   // Apply drum preset settings (convert from 0-100% to 0-32767)
   if (patchJson.engine && state.drumSettings.presetSettings) {

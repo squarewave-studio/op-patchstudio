@@ -30,6 +30,7 @@ vi.mock('jszip', () => {
 // Mock audio utilities
 vi.mock('../../utils/audio', () => ({
   audioBufferToWav: vi.fn().mockResolvedValue(new Blob(['mock wav'], { type: 'audio/wav' })),
+  convertAudioFormat: vi.fn().mockImplementation(async (buffer: AudioBuffer) => buffer),
   sanitizeName: vi.fn().mockImplementation((name) => name.replace(/[^a-zA-Z0-9.]/g, '')),
   generateFilename: vi.fn().mockImplementation((presetName: string, separator: string, _type: string, index: number, _originalName: string, _mapping: string, extension: string) => {
     const drumShortLabels = [
@@ -41,11 +42,6 @@ vi.mock('../../utils/audio', () => ({
   }),
   getAudioFileExtension: vi.fn(() => 'wav'),
   percentToInternal: vi.fn((percent: number) => Math.round(percent * 327.67))
-}));
-
-// Mock convertAudioFormat
-vi.mock('../../utils/audioFormats', () => ({
-  convertAudioFormat: vi.fn().mockImplementation(async (buffer: any) => buffer)
 }));
 
 describe('patchGeneration', () => {
@@ -236,7 +232,7 @@ describe('patchGeneration', () => {
       expect(regionSampleNames).not.toContain('unassigned1.wav'); // Should NOT be in patch.json
     });
   });
-}); 
+});
 
 describe('Drum patch generation with updated mappings', () => {
   it('should generate correct filenames for drum samples with updated indices', async () => {
@@ -542,4 +538,4 @@ describe('patch export structure', () => {
     const patchJson = JSON.parse(patchJsonContent!);
     expect(patchJson.engine.transpose).toBe(-6);
   });
-}); 
+});

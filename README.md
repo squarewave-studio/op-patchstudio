@@ -124,7 +124,7 @@ this project has been migrated to react with typescript for improved maintainabi
 
 ### requirements
 
-- node.js 18+ 
+- node.js 20.19.x or 22.12+
 - npm or yarn
 
 ### installation
@@ -146,6 +146,8 @@ npm run build
 # run tests
 npm run test
 ```
+
+See [TESTING.md](TESTING.md) for the pull request gate, coverage guidance, and testing roadmap.
 
 ### project structure
 
@@ -209,4 +211,3 @@ OP-PatchStudio is available as a progressive web app for offline use and quick a
 OP-PatchStudio is an unofficial tool not affiliated with or endorsed by teenage engineering.
 this software is provided "as is" without warranty of any kind. use at your own risk. for educational and personal use only.
 OP-XY, OP-1 and OP-Z are registered trademarks of teenage engineering.
-

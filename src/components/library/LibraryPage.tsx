@@ -229,7 +229,7 @@ export function LibraryPage() {
 
   // Filter and sort presets
   useEffect(() => {
-    let filtered = presets;
+    let filtered = [...presets];
 
     // Apply search filter
     if (searchTerm) {
@@ -868,4 +868,4 @@ export function LibraryPage() {
       />
     </>
   );
-} 
+}

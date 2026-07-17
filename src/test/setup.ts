@@ -48,6 +48,7 @@ global.AudioContext = vi.fn().mockImplementation(() => ({
   createBufferSource: vi.fn(() => ({
     buffer: null,
     connect: vi.fn(() => ({ connect: vi.fn() })),
+    disconnect: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
     playbackRate: { value: 1 }
@@ -57,11 +58,13 @@ global.AudioContext = vi.fn().mockImplementation(() => ({
   }),
   createGain: vi.fn(() => ({
     gain: { value: 1 },
-    connect: vi.fn(() => ({ connect: vi.fn() }))
+    connect: vi.fn(() => ({ connect: vi.fn() })),
+    disconnect: vi.fn()
   })),
   createStereoPanner: vi.fn(() => ({
     pan: { value: 0 },
-    connect: vi.fn(() => ({ connect: vi.fn() }))
+    connect: vi.fn(() => ({ connect: vi.fn() })),
+    disconnect: vi.fn()
   })),
   destination: {},
   sampleRate: 44100,
