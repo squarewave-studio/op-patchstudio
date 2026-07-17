@@ -1,16 +1,19 @@
 import { describe, expect, it, vi } from 'vitest';
-import { extractDroppedAudioFiles, isAudioFile } from '../../utils/fileDrop';
+import { extractDroppedAudioFiles, getDropEffect, isAudioFile } from '../../utils/fileDrop';
 
 function createDataTransfer({
   files = [],
   items = [],
+  types = [],
 }: {
   files?: File[];
   items?: Partial<DataTransferItem>[];
+  types?: string[];
 }): DataTransfer {
   return {
     files,
     items,
+    types,
   } as unknown as DataTransfer;
 }
 
@@ -27,6 +30,19 @@ describe('fileDrop', () => {
     });
 
     await expect(extractDroppedAudioFiles(dataTransfer)).resolves.toEqual([sample]);
+  });
+
+  it('uses a copy drop effect for Splice file drags', () => {
+    const dataTransfer = createDataTransfer({
+      items: [{ kind: 'file', type: 'audio/wav' }],
+      types: ['Files'],
+    });
+
+    expect(getDropEffect(dataTransfer)).toBe('copy');
+  });
+
+  it('keeps the move drop effect for internal sample drags', () => {
+    expect(getDropEffect(createDataTransfer({}))).toBe('move');
   });
 
   it('falls back to files supplied by Finder', async () => {

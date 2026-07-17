@@ -10,7 +10,7 @@ import { FileDetailsBadges } from '../common/FileDetailsBadges';
 import { DrumSampleSettingsModal } from './DrumSampleSettingsModal';
 import { IconButton } from '../common/IconButton';
 import { getOrganizeModeLabelFull } from './DrumKeyboard';
-import { extractDroppedAudioFiles } from '../../utils/fileDrop';
+import { extractDroppedAudioFiles, getDropEffect } from '../../utils/fileDrop';
 
 
 interface DrumSampleTableProps {
@@ -140,7 +140,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample, i
 
   const handleSampleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = getDropEffect(e.dataTransfer);
     setHoveredIndex(index);
   };
 

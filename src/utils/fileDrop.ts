@@ -10,6 +10,10 @@ export function hasDroppedFiles(dataTransfer: DataTransfer): boolean {
     Array.from(dataTransfer.types).includes('Files');
 }
 
+export function getDropEffect(dataTransfer: DataTransfer): 'copy' | 'move' {
+  return hasDroppedFiles(dataTransfer) ? 'copy' : 'move';
+}
+
 function readFileEntry(entry: FileSystemFileEntry): Promise<File[]> {
   return new Promise((resolve, reject) => {
     entry.file(file => resolve([file]), reject);

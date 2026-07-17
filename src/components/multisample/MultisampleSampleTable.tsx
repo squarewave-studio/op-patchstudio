@@ -7,7 +7,7 @@ import { WaveformZoomModal } from '../common/WaveformZoomModal';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 
 import { midiNoteToString, noteStringToMidiValue } from '../../utils/audio';
-import { extractDroppedAudioFiles, hasDroppedFiles, isAudioFile } from '../../utils/fileDrop';
+import { extractDroppedAudioFiles, getDropEffect, hasDroppedFiles, isAudioFile } from '../../utils/fileDrop';
 
 
 interface MultisampleSampleTableProps {
@@ -244,7 +244,7 @@ export function MultisampleSampleTable({
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = getDropEffect(e.dataTransfer);
     setHoveredIndex(index);
   };
 
