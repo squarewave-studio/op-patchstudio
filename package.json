@@ -40,6 +40,7 @@
     "axios": "^1.10.0",
     "carbon-components": "^10.59.2",
     "jszip": "^3.10.1",
+    "posthog-js": "^1.427.2",
     "react": "^19.1.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",

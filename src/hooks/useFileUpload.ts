@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { readAudioMetadata } from '../utils/audioFormats';
+import { ANALYTICS_EVENTS, capture } from '../utils/analytics';
 
 export function useFileUpload() {
   const { state, dispatch } = useAppContext();
@@ -22,6 +23,8 @@ export function useFileUpload() {
           metadata 
         }
       });
+
+      capture(ANALYTICS_EVENTS.SAMPLE_IMPORTED, { fileCount: 1, mode: 'drum', source: 'audio_file' });
 
     } catch (error) {
       console.error('Error loading drum sample:', error);
@@ -51,6 +54,8 @@ export function useFileUpload() {
           rootNoteOverride 
         }
       });
+
+      capture(ANALYTICS_EVENTS.SAMPLE_IMPORTED, { fileCount: 1, mode: 'multisample', source: 'audio_file' });
 
     } catch (error) {
       console.error('Error loading multisample file:', error);

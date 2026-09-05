@@ -6,12 +6,14 @@ import { FeedbackPage } from './FeedbackPage';
 import { DonatePage } from './DonatePage';
 import { TabNavigation } from './TabNavigation';
 import { FEATURE_FLAGS } from '../../utils/constants';
+import { ANALYTICS_EVENTS, capture } from '../../utils/analytics';
 
 export function MainTabs() {
   const { state, dispatch } = useAppContext();
 
   const handleTabChange = (tabName: 'drum' | 'multisample' | 'feedback' | 'library' | 'donate') => {
     dispatch({ type: 'SET_TAB', payload: tabName });
+    capture(ANALYTICS_EVENTS.PAGE_VIEWED, { page: tabName });
   };
 
   const tabPanelStyle = {

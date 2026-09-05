@@ -153,6 +153,12 @@ npm run build
 npm run test
 ```
 
+### environment variables
+
+| variable | required | purpose |
+| --- | --- | --- |
+| `VITE_POSTHOG_KEY` | no | posthog project key for cookieless usage analytics. when it is unset — as in a local checkout or a fork — analytics is a silent no-op and nothing is sent. |
+
 ### project structure
 
 ```

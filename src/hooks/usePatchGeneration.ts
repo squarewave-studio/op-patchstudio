@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { generateDrumPatch, generateMultisamplePatch, downloadBlob } from '../utils/patchGeneration';
+import { ANALYTICS_EVENTS, capture } from '../utils/analytics';
 
 export function usePatchGeneration() {
   const { state, dispatch } = useAppContext();
@@ -32,8 +33,14 @@ export function usePatchGeneration() {
       );
       
       downloadBlob(patchBlob, `${finalPatchName}.preset.zip`);
-      
-      // Show success message (could be enhanced with a proper notification system)
+
+      capture(ANALYTICS_EVENTS.PRESET_EXPORTED, {
+        mode: 'drum',
+        sampleCount: loadedSamples.length,
+        sampleRate: targetSampleRate ?? 0,
+        bitDepth: targetBitDepth ?? 0,
+        channels: targetChannels
+      });
       
     } catch (error) {
       console.error('Error generating drum patch:', error);
@@ -74,8 +81,14 @@ export function usePatchGeneration() {
       );
       
       downloadBlob(patchBlob, `${finalPatchName}.preset.zip`);
-      
-      // Show success message
+
+      capture(ANALYTICS_EVENTS.PRESET_EXPORTED, {
+        mode: 'multisample',
+        sampleCount: state.multisampleFiles.length,
+        sampleRate: targetSampleRate ?? 0,
+        bitDepth: targetBitDepth ?? 0,
+        channels: targetChannels
+      });
       
     } catch (error) {
       console.error('Error generating multisample patch:', error);
