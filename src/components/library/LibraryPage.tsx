@@ -849,10 +849,13 @@ export function LibraryPage() {
                   privacy & data
                 </h3>
                 <p>
-                  all data is stored locally on your device. no data is sent to external servers or shared with third parties.
+                  your presets, samples, and settings are stored locally on your device and are never
+                  uploaded anywhere.
                 </p>
                 <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>
-                  your presets, samples, and settings remain private and secure.
+                  the app sends anonymous, cookieless usage analytics (things like which tools are used
+                  and export counts — never your audio or preset contents), and the desktop waitlist
+                  form sends only what you type into it.
                 </p>
               </>
             }

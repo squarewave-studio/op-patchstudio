@@ -20,7 +20,9 @@ export function WaitlistNudge({ trigger, text, style }: WaitlistNudgeProps) {
   const [isHidden, setIsHidden] = useState(true);
 
   useEffect(() => {
-    if (hasJoinedWaitlist()) return;
+    // Only the waitlist pitch is redundant for someone who has joined; the
+    // launched-mode nudge is the follow-up they signed up for.
+    if (config.mode === 'waitlist' && hasJoinedWaitlist()) return;
 
     setIsHidden(false);
     capture(ANALYTICS_EVENTS.UPGRADE_BANNER_SHOWN, { context: trigger, mode: config.mode });

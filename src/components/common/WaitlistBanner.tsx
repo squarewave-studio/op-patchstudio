@@ -24,10 +24,13 @@ export function WaitlistBanner() {
 
   useEffect(() => {
     return onPresetExported(() => {
-      if (hasJoinedWaitlist() || isBannerSnoozed()) return;
+      // Having joined the waitlist only suppresses the waitlist pitch; the
+      // launched-mode banner is news those same people asked for.
+      if (config.mode === 'waitlist' && hasJoinedWaitlist()) return;
+      if (isBannerSnoozed(config.mode)) return;
       setIsVisible(true);
     });
-  }, []);
+  }, [config.mode]);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -43,7 +46,7 @@ export function WaitlistBanner() {
   };
 
   const handleDismiss = () => {
-    snoozeBanner();
+    snoozeBanner(config.mode);
     capture(ANALYTICS_EVENTS.UPGRADE_BANNER_DISMISSED, { context: TRIGGER });
     close();
   };

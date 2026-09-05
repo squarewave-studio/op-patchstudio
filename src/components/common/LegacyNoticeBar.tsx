@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 import { readStorage, writeStorage } from '../../utils/safeStorage';
 
-const DISMISSED_KEY = 'op_legacy_notice_dismissed';
+// Keyed by mode: dismissing the legacy notice must not hide the launch notice.
+const DISMISSED_KEYS = {
+  waitlist: 'op_legacy_notice_dismissed',
+  launched: 'op_launched_notice_dismissed'
+} as const;
 
 export const LEGACY_NOTICE_TEXT =
   "this web version is now legacy and no longer receives new features. i'm putting all new development into the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android.";
@@ -15,12 +19,12 @@ export function LegacyNoticeBar() {
   const [isDismissed, setIsDismissed] = useState(true);
 
   useEffect(() => {
-    setIsDismissed(readStorage(DISMISSED_KEY) !== null);
-  }, []);
+    setIsDismissed(readStorage(DISMISSED_KEYS[config.mode]) !== null);
+  }, [config.mode]);
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    writeStorage(DISMISSED_KEY, new Date().toISOString());
+    writeStorage(DISMISSED_KEYS[config.mode], new Date().toISOString());
   };
 
   if (isDismissed) {
