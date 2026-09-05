@@ -60,7 +60,7 @@ export interface MultisampleFile {
 
 export interface AppState {
   // Current tab
-  currentTab: 'drum' | 'multisample' | 'feedback' | 'library' | 'donate';
+  currentTab: 'drum' | 'multisample' | 'feedback' | 'library' | 'desktop';
   
   // Drum tool settings
   drumSettings: {
@@ -153,7 +153,7 @@ export interface AppState {
 
 // Define enhanced action types
 export type AppAction = 
-  | { type: 'SET_TAB'; payload: 'drum' | 'multisample' | 'feedback' | 'library' | 'donate' }
+  | { type: 'SET_TAB'; payload: 'drum' | 'multisample' | 'feedback' | 'library' | 'desktop' }
   | { type: 'SET_DRUM_SAMPLE_RATE'; payload: number }
   | { type: 'SET_DRUM_BIT_DEPTH'; payload: number }
   | { type: 'SET_DRUM_CHANNELS'; payload: number }
@@ -273,13 +273,14 @@ const initialMultisampleFile: MultisampleFile = {
 };
 
 // Function to get initial tab from cookie
-const getInitialTab = (): 'drum' | 'multisample' | 'feedback' | 'library' | 'donate' => {
+const getInitialTab = (): 'drum' | 'multisample' | 'feedback' | 'library' | 'desktop' => {
   try {
     const savedTab = cookieUtils.getCookie(COOKIE_KEYS.LAST_TAB);
     if (savedTab === 'multisample') return 'multisample';
     if (savedTab === 'feedback') return 'feedback';
     if (savedTab === 'library') return 'library';
-    if (savedTab === 'donate') return 'donate';
+    // 'donate' is the old key for what is now the desktop app tab.
+    if (savedTab === 'desktop' || savedTab === 'donate') return 'desktop';
     return 'drum';
   } catch (error) {
     console.warn('Failed to load saved tab from cookie, defaulting to drum tab:', error);

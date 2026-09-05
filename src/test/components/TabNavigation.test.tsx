@@ -6,7 +6,7 @@ import { FEATURE_FLAGS } from '../../utils/constants';
 // Mock FEATURE_FLAGS
 vi.mock('../../utils/constants', () => ({
   FEATURE_FLAGS: {
-    DONATE_PAGE: true
+    DESKTOP_PAGE: true
   }
 }));
 
@@ -27,7 +27,7 @@ describe('TabNavigation', () => {
     
     // Check that all tabs are present
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(5); // drum, multisample, library, donate, feedback
+    expect(tabs).toHaveLength(5); // drum, multisample, library, desktop app, feedback
     
     // Check that each tab has proper ARIA attributes
     tabs.forEach(tab => {
@@ -116,20 +116,20 @@ describe('TabNavigation', () => {
     expect(multisampleTab).toHaveStyle({ color: 'var(--color-text-secondary)' });
   });
 
-  it('should respect feature flags for donate page', () => {
-    // Mock FEATURE_FLAGS to disable donate page
-    (vi.mocked(FEATURE_FLAGS) as any).DONATE_PAGE = false;
+  it('should respect feature flags for the desktop app page', () => {
+    // Mock FEATURE_FLAGS to disable the desktop app page
+    (vi.mocked(FEATURE_FLAGS) as any).DESKTOP_PAGE = false;
     
     render(<TabNavigation currentTab="drum" onTabChange={mockOnTabChange} />);
     
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(4); // drum, multisample, library, feedback (no donate)
+    expect(tabs).toHaveLength(4); // drum, multisample, library, feedback (no desktop app)
     
-    // Check that donate tab is not present
-    expect(screen.queryByRole('tab', { name: 'donate tab' })).not.toBeInTheDocument();
+    // Check that the desktop app tab is not present
+    expect(screen.queryByRole('tab', { name: 'desktop app tab' })).not.toBeInTheDocument();
     
     // Reset mock
-    (vi.mocked(FEATURE_FLAGS) as any).DONATE_PAGE = true;
+    (vi.mocked(FEATURE_FLAGS) as any).DESKTOP_PAGE = true;
   });
 
   it('should ensure minimum touch target size', () => {

@@ -3,15 +3,17 @@ import { DrumTool } from '../drum/DrumTool';
 import { MultisampleTool } from '../multisample/MultisampleTool';
 import { LibraryPage } from '../library/LibraryPage';
 import { FeedbackPage } from './FeedbackPage';
-import { DonatePage } from './DonatePage';
+import { DesktopPage } from './DesktopPage';
 import { TabNavigation } from './TabNavigation';
 import { FEATURE_FLAGS } from '../../utils/constants';
+import { ANALYTICS_EVENTS, capture } from '../../utils/analytics';
 
 export function MainTabs() {
   const { state, dispatch } = useAppContext();
 
-  const handleTabChange = (tabName: 'drum' | 'multisample' | 'feedback' | 'library' | 'donate') => {
+  const handleTabChange = (tabName: 'drum' | 'multisample' | 'feedback' | 'library' | 'desktop') => {
     dispatch({ type: 'SET_TAB', payload: tabName });
+    capture(ANALYTICS_EVENTS.PAGE_VIEWED, { page: tabName });
   };
 
   const tabPanelStyle = {
@@ -68,15 +70,15 @@ export function MainTabs() {
         </div>
       )}
       
-      {state.currentTab === 'donate' && FEATURE_FLAGS.DONATE_PAGE && (
+      {state.currentTab === 'desktop' && FEATURE_FLAGS.DESKTOP_PAGE && (
         <div
           role="tabpanel"
-          id="donate-tabpanel"
-          aria-labelledby="donate-tab"
-          aria-label="donation and support content"
+          id="desktop-tabpanel"
+          aria-labelledby="desktop-tab"
+          aria-label="desktop app content"
           style={tabPanelStyle}
         >
-          <DonatePage />
+          <DesktopPage />
         </div>
       )}
       

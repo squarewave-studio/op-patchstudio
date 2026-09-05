@@ -33,7 +33,7 @@ export const MIDI_CONSTANTS = {
 
 // Feature flags
 export const FEATURE_FLAGS = {
-  DONATE_PAGE: true, // Enable/disable donate page tab
+  DESKTOP_PAGE: true, // Enable/disable the desktop app page tab
 } as const;
 
 // Filename separator options for generated preset files
