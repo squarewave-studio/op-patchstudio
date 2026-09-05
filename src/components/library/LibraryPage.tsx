@@ -11,6 +11,9 @@ import type { LibraryPreset } from '../../utils/libraryUtils';
 import { blobToAudioBuffer } from '../../utils/libraryUtils';
 import { sessionStorageIndexedDB } from '../../utils/sessionStorageIndexedDB';
 import { AUDIO_CONSTANTS } from '../../utils/constants';
+import { buildLibraryExport } from '../../utils/libraryExport';
+import { ANALYTICS_EVENTS, capture } from '../../utils/analytics';
+import { getAppVersion } from '../../utils/version';
 
 // Default values for clean state restoration
 const defaultDrumSettings = {
@@ -135,6 +138,7 @@ export function LibraryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const isMobile = window.innerWidth < 768;
   const pageSize = isMobile ? 10 : 15;
+  const [isExportingLibrary, setIsExportingLibrary] = useState(false);
   const [isLoadConfirmOpen, setIsLoadConfirmOpen] = useState(false);
   const [pendingPresetToLoad, setPendingPresetToLoad] = useState<LibraryPreset | null>(null);
   
@@ -740,6 +744,47 @@ export function LibraryPage() {
     setSelectedPresets(new Set());
   };
 
+  // Exports the whole library as one zip, for import into the desktop app.
+  const handleExportLibrary = async () => {
+    if (presets.length === 0 || isExportingLibrary) return;
+
+    setIsExportingLibrary(true);
+    try {
+      const appVersion = await getAppVersion();
+      const blob = await buildLibraryExport(presets, appVersion);
+      downloadBlob(blob, `op-patchstudio-library-${new Date().toISOString().slice(0, 10)}.zip`);
+
+      capture(ANALYTICS_EVENTS.SAMPLES_EXPORTED, {
+        sampleCount: presets.reduce((total, preset) => total + (preset.sampleCount ?? 0), 0),
+        presetCount: presets.length,
+        exportType: 'library'
+      });
+
+      dispatch({
+        type: 'ADD_NOTIFICATION',
+        payload: {
+          id: Date.now().toString(),
+          type: 'success',
+          title: 'library exported',
+          message: `exported ${presets.length} preset${presets.length === 1 ? '' : 's'}`
+        }
+      });
+    } catch (error) {
+      console.error('Failed to export library:', error);
+      dispatch({
+        type: 'ADD_NOTIFICATION',
+        payload: {
+          id: Date.now().toString(),
+          type: 'error',
+          title: 'export failed',
+          message: 'failed to export library'
+        }
+      });
+    } finally {
+      setIsExportingLibrary(false);
+    }
+  };
+
   return (
     <>
       <div style={{ 
@@ -754,6 +799,47 @@ export function LibraryPage() {
         justifyContent: 'space-between'
       }}>
         <div>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '0.75rem',
+            marginBottom: '0.75rem'
+          }}>
+            <span style={{
+              fontSize: '0.85rem',
+              color: 'var(--color-text-secondary)',
+              lineHeight: 1.5
+            }}>
+              take your whole library with you — the OP-PatchStudio desktop app imports this file.
+            </span>
+            <button
+              type="button"
+              onClick={handleExportLibrary}
+              disabled={presets.length === 0 || isExportingLibrary}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                border: '1px solid var(--color-border-medium)',
+                borderRadius: '3px',
+                backgroundColor: 'var(--color-bg-primary)',
+                color: 'var(--color-text-secondary)',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                fontFamily: 'inherit',
+                cursor: presets.length === 0 || isExportingLibrary ? 'default' : 'pointer',
+                opacity: presets.length === 0 || isExportingLibrary ? 0.6 : 1,
+                minHeight: '44px'
+              }}
+            >
+              <i className="fas fa-file-export" aria-hidden="true" />
+              {isExportingLibrary ? 'exporting...' : 'export library'}
+            </button>
+          </div>
+
           <LibraryTable
             title="presets"
             titleTooltip={
