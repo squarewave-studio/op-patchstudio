@@ -7,6 +7,7 @@ import PWAInstallPrompt from './components/common/PWAInstallPrompt';
 import { Footer } from './components/common/Footer';
 import { LegacyNoticeBar } from './components/common/LegacyNoticeBar';
 import { WaitlistBanner } from './components/common/WaitlistBanner';
+import { OfflineNotice } from './components/common/OfflineNotice';
 import { FeedbackPage } from './components/common/FeedbackPage';
 import { DonatePage } from './components/common/DonatePage';
 import { SessionRestorationModal } from './components/common/SessionRestorationModal';
@@ -130,6 +131,7 @@ function AppContent() {
     <>
       <Theme theme="white" className="opxy-theme">
         <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-surface-tertiary)' }}>
+          <OfflineNotice />
           <LegacyNoticeBar />
           <Content style={{
             padding: isMobileDevice ? '0.5rem' : '2rem',

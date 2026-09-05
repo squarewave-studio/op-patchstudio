@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { InlineLoading } from '@carbon/react';
 import { useAppContext } from '../../context/AppContext';
 import { calculatePatchSize, formatFileSize, getPatchSizeWarning } from '../../utils/audio';
+import { WaitlistNudge } from './WaitlistNudge';
 
 interface PatchSizeIndicatorProps {
   type: 'drum' | 'multisample';
@@ -201,6 +202,12 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
             )}
             <li>trim unused portions of samples</li>
           </ul>
+
+          <WaitlistNudge
+            trigger="patch-size-limit"
+            text="trimming and converting a set this size is slow in a browser tab. the desktop app does it without the browser's memory ceiling."
+            style={{ marginTop: '0.5rem' }}
+          />
         </div>
       )}
     </div>

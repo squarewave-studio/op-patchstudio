@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
+import { WaitlistNudge } from './WaitlistNudge';
+
 interface RecordingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -412,6 +414,12 @@ export function RecordingModal({
           fontSize: '0.95rem',
           lineHeight: '1.5'
         }}>
+          <WaitlistNudge
+            trigger="recording-modal"
+            text="browser recording is limited to what the tab can reach. the desktop app records from any input on your machine."
+            style={{ marginBottom: '1.5rem' }}
+          />
+
           {/* Input Device Selection */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ 
