@@ -2,6 +2,12 @@
 
 **free & open source preset creator for OP synthesizers. upload samples, edit waveforms, adjust settings and generate patches instantly.**
 
+> ## this web version is legacy
+>
+> this web version is now legacy and no longer receives new features. it stays free and online, but it is unsupported.
+>
+> i'm putting all new development into the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android. you can read about it and join the waitlist at [squarewave.studio/op-patchstudio](https://squarewave.studio/op-patchstudio).
+
 ![op-patchstudio preview](public/assets/preview-image.png)
 
 ![OP-PatchStudio preview](public/assets/preview-image-2.png)

@@ -47,6 +47,23 @@ export function FeedbackPage() {
       <div style={{ 
         padding: isMobile ? '1rem' : '2rem',
       }}>
+        {/* Legacy status: set expectations before anyone files a request */}
+        <div style={{
+          marginBottom: '1rem',
+          background: 'var(--color-bg-secondary)',
+          border: '1px solid var(--color-border-light)',
+          borderRadius: '6px',
+          padding: '1rem',
+          color: 'var(--color-text-secondary)',
+          fontSize: '0.95rem',
+          textAlign: 'center',
+          lineHeight: 1.5
+        }}>
+          this web version is now legacy and no longer receives new features. i'm putting all new development into the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android.<br/>
+          you're still welcome to report anything broken here, but fixes go to the{' '}
+          <a href="https://squarewave.studio/op-patchstudio" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-text-secondary)', textDecoration: 'underline' }}>desktop app</a>.
+        </div>
+
         {/* User note about checking GitHub issues first */}
         <div style={{
           marginBottom: '1.5rem',

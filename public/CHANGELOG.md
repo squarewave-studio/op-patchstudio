@@ -4,6 +4,8 @@ all notable changes to this project will be documented in this file.
 
 the format is based on [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
+> **this web version is legacy.** it no longer receives new features. all new development goes into the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android: https://squarewave.studio/op-patchstudio
+
 ## [0.15.5] - 2025-09-22
 
 ### fixed
