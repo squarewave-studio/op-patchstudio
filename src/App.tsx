@@ -9,7 +9,7 @@ import { LegacyNoticeBar } from './components/common/LegacyNoticeBar';
 import { WaitlistBanner } from './components/common/WaitlistBanner';
 import { OfflineNotice } from './components/common/OfflineNotice';
 import { FeedbackPage } from './components/common/FeedbackPage';
-import { DonatePage } from './components/common/DonatePage';
+import { DesktopPage } from './components/common/DesktopPage';
 import { SessionRestorationModal } from './components/common/SessionRestorationModal';
 import { useSessionManagement } from './hooks/useSessionManagement';
 import './theme/device-themes.scss';
@@ -47,7 +47,7 @@ function AppContent() {
   const [currentRoute, setCurrentRoute] = useState(() => {
     // Initialize route from URL hash
     if (window.location.hash === '#/feedback') return 'feedback';
-    if (window.location.hash === '#/donate') return 'donate';
+    if (window.location.hash === '#/desktop' || window.location.hash === '#/donate') return 'desktop';
     return 'home';
   });
 
@@ -70,8 +70,8 @@ function AppContent() {
     const handleHashChange = () => {
       if (window.location.hash === '#/feedback') {
         setCurrentRoute('feedback');
-      } else if (window.location.hash === '#/donate') {
-        setCurrentRoute('donate');
+      } else if (window.location.hash === '#/desktop' || window.location.hash === '#/donate') {
+        setCurrentRoute('desktop');
       } else {
         setCurrentRoute('home');
       }
@@ -143,8 +143,8 @@ function AppContent() {
           }}>
             {currentRoute === 'feedback' ? (
               <FeedbackPage />
-            ) : currentRoute === 'donate' ? (
-              <DonatePage />
+            ) : currentRoute === 'desktop' ? (
+              <DesktopPage />
             ) : (
               <>
                 <AppHeader />
