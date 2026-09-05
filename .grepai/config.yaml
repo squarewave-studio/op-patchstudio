@@ -1,0 +1,111 @@
+version: 1
+embedder:
+    provider: ollama
+    model: nomic-embed-text
+    endpoint: http://localhost:11434
+    dimensions: 768
+store:
+    backend: postgres
+    postgres:
+        dsn: postgres://localhost:5432/grepai
+chunking:
+    size: 512
+    overlap: 50
+watch:
+    debounce_ms: 500
+    last_index_time: 2026-01-25T07:01:24.428331Z
+search:
+    boost:
+        enabled: true
+        penalties:
+            - pattern: /tests/
+              factor: 0.5
+            - pattern: /test/
+              factor: 0.5
+            - pattern: __tests__
+              factor: 0.5
+            - pattern: _test.
+              factor: 0.5
+            - pattern: .test.
+              factor: 0.5
+            - pattern: .spec.
+              factor: 0.5
+            - pattern: test_
+              factor: 0.5
+            - pattern: /mocks/
+              factor: 0.4
+            - pattern: /mock/
+              factor: 0.4
+            - pattern: .mock.
+              factor: 0.4
+            - pattern: /fixtures/
+              factor: 0.4
+            - pattern: /testdata/
+              factor: 0.4
+            - pattern: /generated/
+              factor: 0.4
+            - pattern: .generated.
+              factor: 0.4
+            - pattern: .gen.
+              factor: 0.4
+            - pattern: .md
+              factor: 0.6
+            - pattern: /docs/
+              factor: 0.6
+        bonuses:
+            - pattern: /src/
+              factor: 1.1
+            - pattern: /lib/
+              factor: 1.1
+            - pattern: /app/
+              factor: 1.1
+    hybrid:
+        enabled: false
+        k: 60
+trace:
+    mode: fast
+    enabled_languages:
+        - .go
+        - .js
+        - .ts
+        - .jsx
+        - .tsx
+        - .py
+        - .php
+        - .c
+        - .h
+        - .cpp
+        - .hpp
+        - .cc
+        - .cxx
+        - .rs
+        - .zig
+        - .cs
+        - .java
+        - .pas
+        - .dpr
+    exclude_patterns:
+        - '*_test.go'
+        - '*.spec.ts'
+        - '*.spec.js'
+        - '*.test.ts'
+        - '*.test.js'
+        - __tests__/*
+update:
+    check_on_startup: false
+ignore:
+    - .git
+    - .grepai
+    - node_modules
+    - vendor
+    - bin
+    - dist
+    - __pycache__
+    - .venv
+    - venv
+    - .idea
+    - .vscode
+    - target
+    - .zig-cache
+    - zig-out
+    - qdrant_storage

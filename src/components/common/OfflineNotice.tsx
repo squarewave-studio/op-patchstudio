@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { WaitlistNudge } from './WaitlistNudge';
 
 // This PWA keeps working offline, but anything that needs the network — saving
 // feedback, the changelog, the waitlist itself — does not. There is no separate
-// offline fallback page, so this stands in for one.
+// offline fallback page, so this stands in for one. It deliberately carries no
+// waitlist form or link: both need the network, so offering them here would be
+// a dead end.
 export function OfflineNotice() {
   const [isOffline, setIsOffline] = useState(false);
 
@@ -44,13 +45,8 @@ export function OfflineNotice() {
         style={{ marginTop: '0.15rem', color: 'var(--color-text-secondary)' }}
       />
       <div style={{ flex: 1 }}>
-        <div style={{ marginBottom: '0.25rem' }}>
-          you're offline. editing and export still work, but anything needing the network won't.
-        </div>
-        <WaitlistNudge
-          trigger="offline-page"
-          text="the desktop app runs natively, so there's no browser tab to lose."
-        />
+        you're offline. editing and export still work, but anything needing the network won't. the
+        desktop app works fully offline by design.
       </div>
     </div>
   );

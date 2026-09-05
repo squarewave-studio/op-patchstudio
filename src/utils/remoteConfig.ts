@@ -35,7 +35,10 @@ function normaliseConfig(raw: unknown): OpWebConfig {
   };
 }
 
-// Memoised so the config is fetched at most once per session.
+// Memoised so a successful fetch happens at most once per session. A failed
+// fetch (this is an offline-capable PWA) is not memoised, so a later call —
+// e.g. when connectivity returns — retries instead of pinning the defaults
+// for the whole session.
 let pending: Promise<OpWebConfig> | null = null;
 
 export async function fetchRemoteConfig(): Promise<OpWebConfig> {
@@ -44,10 +47,12 @@ export async function fetchRemoteConfig(): Promise<OpWebConfig> {
       try {
         const response = await fetch(`${CONFIG_URL}?v=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) {
+          pending = null;
           return DEFAULT_CONFIG;
         }
         return normaliseConfig(await response.json());
       } catch {
+        pending = null;
         return DEFAULT_CONFIG;
       }
     })();

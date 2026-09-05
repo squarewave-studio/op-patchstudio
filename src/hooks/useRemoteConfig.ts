@@ -9,14 +9,21 @@ export function useRemoteConfig(): OpWebConfig {
   useEffect(() => {
     let active = true;
 
-    fetchRemoteConfig().then(result => {
-      if (active) {
-        setConfig(result);
-      }
-    });
+    const load = () => {
+      fetchRemoteConfig().then(result => {
+        if (active) {
+          setConfig(result);
+        }
+      });
+    };
+
+    load();
+    // A PWA can start offline; retry once connectivity returns.
+    window.addEventListener('online', load);
 
     return () => {
       active = false;
+      window.removeEventListener('online', load);
     };
   }, []);
 
