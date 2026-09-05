@@ -6,6 +6,7 @@ import { AppContextProvider, useAppContext } from './context/AppContext';
 import PWAInstallPrompt from './components/common/PWAInstallPrompt';
 import { Footer } from './components/common/Footer';
 import { LegacyNoticeBar } from './components/common/LegacyNoticeBar';
+import { WaitlistBanner } from './components/common/WaitlistBanner';
 import { FeedbackPage } from './components/common/FeedbackPage';
 import { DonatePage } from './components/common/DonatePage';
 import { SessionRestorationModal } from './components/common/SessionRestorationModal';
@@ -153,6 +154,8 @@ function AppContent() {
                 />
                 
                 <PWAInstallPrompt />
+
+                <WaitlistBanner />
                 
                 <Footer />
               </>
