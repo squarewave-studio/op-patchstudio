@@ -57,17 +57,26 @@ export function LegacyNoticeBar() {
         aria-hidden="true"
         style={{ marginTop: '0.15rem', color: 'var(--color-text-secondary)' }}
       />
-      <span style={{ flex: 1 }}>
-        {text}{' '}
-        <a
-          href={linkHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'var(--color-text-primary)', textDecoration: 'underline' }}
-        >
-          {linkLabel}
-        </a>
-      </span>
+      <span style={{ flex: 1, alignSelf: 'center' }}>{text}</span>
+      <a
+        href={linkHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          flex: '0 0 auto',
+          alignSelf: 'center',
+          padding: '0.4rem 0.9rem',
+          borderRadius: '3px',
+          backgroundColor: 'var(--color-interactive-focus)',
+          color: 'var(--color-white)',
+          fontSize: '0.85rem',
+          fontWeight: 500,
+          textDecoration: 'none',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {linkLabel}
+      </a>
       <button
         type="button"
         onClick={handleDismiss}
