@@ -9,7 +9,7 @@ const DISMISSED_KEYS = {
 } as const;
 
 export const LEGACY_NOTICE_TEXT =
-  "this web version is now legacy and no longer receives new features. i'm building a new native OP-PatchStudio app. you can follow development and get access when it's ready.";
+  "this web version is now legacy and no longer receives new features. i'm building a new native OP-PatchStudio app. follow development on the new page and sign up for early access.";
 
 export const LAUNCHED_NOTICE_TEXT =
   'the OP-PatchStudio desktop app is available now. this web version stays online but no longer receives new features.';
@@ -33,8 +33,8 @@ export function LegacyNoticeBar() {
 
   const isLaunched = config.mode === 'launched';
   const text = config.message ?? (isLaunched ? LAUNCHED_NOTICE_TEXT : LEGACY_NOTICE_TEXT);
-  const linkHref = isLaunched ? config.proUrl : 'https://squarewave.studio/op-patchstudio';
-  const linkLabel = isLaunched ? 'get the desktop app' : 'read more';
+  const linkHref = isLaunched ? config.proUrl : 'https://squarewave.studio/op-patchstudio#waitlist';
+  const linkLabel = isLaunched ? 'get the desktop app' : 'join the waitlist';
 
   return (
     <div
