@@ -74,8 +74,8 @@ export function DesktopPage() {
         <div style={bodyStyle}>
           <div style={{ maxWidth: '640px', margin: '0 auto' }}>
             <p style={paragraphStyle}>
-              i'm building OP-PatchStudio as a desktop app. it does what this web version does — the
-              multisample editor and the drum tool — as a native application, without a browser tab
+              i'm building OP-PatchStudio as a desktop app. it does what this web version does (the
+              multisample editor and the drum tool) as a native application, without a browser tab
               between you and your samples.
             </p>
 
@@ -86,7 +86,7 @@ export function DesktopPage() {
             </p>
 
             <p style={paragraphStyle}>
-              if you've built presets here, you can take them with you — the library tab has an
+              if you've built presets here, you can take them with you. the library tab has an
               "export library" button that produces a file the desktop app imports.
             </p>
 

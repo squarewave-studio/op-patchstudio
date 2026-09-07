@@ -9,7 +9,7 @@ const DISMISSED_KEYS = {
 } as const;
 
 export const LEGACY_NOTICE_TEXT =
-  "this web version is now legacy and no longer receives new features. i'm building a new native OP-PatchStudio app — you can follow development and get access when it's ready.";
+  "this web version is now legacy and no longer receives new features. i'm building a new native OP-PatchStudio app. you can follow development and get access when it's ready.";
 
 export const LAUNCHED_NOTICE_TEXT =
   'the OP-PatchStudio desktop app is available now. this web version stays online but no longer receives new features.';

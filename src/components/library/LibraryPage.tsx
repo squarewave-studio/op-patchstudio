@@ -812,7 +812,7 @@ export function LibraryPage() {
               color: 'var(--color-text-secondary)',
               lineHeight: 1.5
             }}>
-              take your whole library with you — the OP-PatchStudio desktop app imports this file.
+              take your whole library with you. the OP-PatchStudio desktop app imports this file.
             </span>
             <button
               type="button"
@@ -854,7 +854,7 @@ export function LibraryPage() {
                 </p>
                 <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>
                   the app sends anonymous, cookieless usage analytics (things like which tools are used
-                  and export counts — never your audio or preset contents), and the desktop waitlist
+                  and export counts, never your audio or preset contents), and the desktop waitlist
                   form sends only what you type into it.
                 </p>
               </>

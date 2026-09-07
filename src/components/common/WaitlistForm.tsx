@@ -29,7 +29,7 @@ const inputStyle = {
 export function WaitlistForm({
   trigger,
   showDeviceSelect = true,
-  successMessage = "thanks — you're on the list. i'll email you when the desktop app is ready.",
+  successMessage = "thanks, you're on the list. i'll email you when the desktop app is ready.",
   onSubmitted
 }: WaitlistFormProps) {
   const [email, setEmail] = useState('');
