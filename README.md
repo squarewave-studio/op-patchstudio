@@ -13,7 +13,7 @@
 ![OP-PatchStudio preview](public/assets/preview-image-2.png)
 
 - **live demo:** [OP-PatchStudio](https://op-patch.studio/)
-- **github:** [github.com/joseph-holland/op-patchstudio](https://github.com/joseph-holland/op-patchstudio)
+- **github:** [github.com/squarewave-studio/op-patchstudio](https://github.com/squarewave-studio/op-patchstudio)
 
 ## features
 
@@ -137,7 +137,7 @@ this project has been migrated to react with typescript for improved maintainabi
 
 ```bash
 # clone the repository
-git clone https://github.com/joseph-holland/op-patchstudio.git
+git clone https://github.com/squarewave-studio/op-patchstudio.git
 cd op-patchstudio
 
 # install dependencies
