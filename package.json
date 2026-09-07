@@ -6,11 +6,11 @@
   "description": "Free & open source preset creator for OP synthesizers. Upload samples, edit waveforms, adjust settingsand generate patches instantly.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joseph-holland/op-patchstudio.git"
+    "url": "https://github.com/squarewave-studio/op-patchstudio.git"
   },
   "homepage": "https://op-patch.studio",
   "bugs": {
-    "url": "https://github.com/joseph-holland/op-patchstudio/issues"
+    "url": "https://github.com/squarewave-studio/op-patchstudio/issues"
   },
   "author": "Joseph Holland",
   "license": "MIT",

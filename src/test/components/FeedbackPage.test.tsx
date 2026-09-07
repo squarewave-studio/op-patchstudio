@@ -20,7 +20,7 @@ describe('FeedbackPage', () => {
     expect(link).toBeInTheDocument();
     expect(link.closest('a')).toHaveAttribute(
       'href',
-      'https://github.com/joseph-holland/op-patchstudio/issues'
+      'https://github.com/squarewave-studio/op-patchstudio/issues'
     );
   });
 

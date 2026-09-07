@@ -18,7 +18,7 @@ describe('DesktopPage', () => {
     render(<DesktopPage />);
 
     expect(screen.getByText('the desktop app')).toBeInTheDocument();
-    expect(screen.getByText(/macOS and windows first, with linux to follow, then iOS and android/)).toBeInTheDocument();
+    expect(screen.getByText(/without a browser tab/)).toBeInTheDocument();
   });
 
   it('says which tools stay free and that the web version is legacy', () => {

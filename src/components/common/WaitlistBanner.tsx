@@ -104,7 +104,7 @@ export function WaitlistBanner() {
           >
             {isLaunched
               ? "this web version is legacy. the OP-PatchStudio desktop app is where new features land, and it's available now."
-              : "this web version is legacy, so it stays as it is. i'm building the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android. leave your email and i'll let you know when it's ready."}
+              : "this web version is legacy, so it stays as it is. i'm building a new native OP-PatchStudio app. leave your email and i'll let you know when it's ready."}
           </span>
         </div>
         <button

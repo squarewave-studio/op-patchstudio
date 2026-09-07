@@ -59,7 +59,7 @@ export function FeedbackPage() {
           textAlign: 'center',
           lineHeight: 1.5
         }}>
-          this web version is now legacy and no longer receives new features. i'm putting all new development into the OP-PatchStudio desktop app — macOS and windows first, linux to follow, then iOS and android.<br/>
+          this web version is now legacy and no longer receives new features. i'm putting all new development into the new native OP-PatchStudio app.<br/>
           you're still welcome to report anything broken here, but fixes go to the{' '}
           <a href="https://squarewave.studio/op-patchstudio" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-text-secondary)', textDecoration: 'underline' }}>desktop app</a>.
         </div>
@@ -77,7 +77,7 @@ export function FeedbackPage() {
           lineHeight: 1.5
         }}>
           <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: 'var(--color-text-secondary)' }}></i>
-          before submitting an issue,<br/>please <a href="https://github.com/joseph-holland/op-patchstudio/issues" target="_blank" rel="noopener" style={{ color: 'var(--color-text-secondary)', textDecoration: 'underline', wordBreak: 'break-all' }}>check if your bug or request has already been raised here</a>.
+          before submitting an issue,<br/>please <a href="https://github.com/squarewave-studio/op-patchstudio/issues" target="_blank" rel="noopener" style={{ color: 'var(--color-text-secondary)', textDecoration: 'underline', wordBreak: 'break-all' }}>check if your bug or request has already been raised here</a>.
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <iframe

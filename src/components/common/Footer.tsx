@@ -29,10 +29,8 @@ export function Footer() {
         gap: '0.5em',
         fontSize: '0.98em'
       }}>
-        <span style={{ color: 'var(--color-text-tertiary)' }}>proudly open source</span>
-        <span style={{ color: 'var(--color-text-tertiary)' }}>|</span>
         <a 
-          href="https://github.com/joseph-holland/op-patchstudio" 
+          href="https://github.com/squarewave-studio/op-patchstudio" 
           target="_blank" 
           rel="noopener"
           style={{ color: 'var(--color-text-secondary)' }}

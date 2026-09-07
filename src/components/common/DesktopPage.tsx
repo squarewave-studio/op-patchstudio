@@ -80,10 +80,6 @@ export function DesktopPage() {
             </p>
 
             <p style={paragraphStyle}>
-              it's coming to macOS and windows first, with linux to follow, then iOS and android.
-            </p>
-
-            <p style={paragraphStyle}>
               the multisample editor and the drum tool stay free in the desktop app. this web version
               also stays free and online, but it's now legacy: it no longer receives new features, and
               all my development time goes into the desktop app.
@@ -153,7 +149,7 @@ export function DesktopPage() {
           <p style={{ ...paragraphStyle, fontSize: '0.9rem', margin: 0 }}>
             this web version is{' '}
             <a
-              href="https://github.com/joseph-holland/op-patchstudio"
+              href="https://github.com/squarewave-studio/op-patchstudio"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: 'var(--color-interactive-primary)', textDecoration: 'underline' }}
