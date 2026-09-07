@@ -2,7 +2,6 @@ import { useAppContext } from '../../context/AppContext';
 import { DrumTool } from '../drum/DrumTool';
 import { MultisampleTool } from '../multisample/MultisampleTool';
 import { LibraryPage } from '../library/LibraryPage';
-import { FeedbackPage } from './FeedbackPage';
 import { DesktopPage } from './DesktopPage';
 import { TabNavigation } from './TabNavigation';
 import { FEATURE_FLAGS } from '../../utils/constants';
@@ -11,7 +10,7 @@ import { ANALYTICS_EVENTS, capture } from '../../utils/analytics';
 export function MainTabs() {
   const { state, dispatch } = useAppContext();
 
-  const handleTabChange = (tabName: 'drum' | 'multisample' | 'feedback' | 'library' | 'desktop') => {
+  const handleTabChange = (tabName: 'drum' | 'multisample' | 'library' | 'desktop') => {
     dispatch({ type: 'SET_TAB', payload: tabName });
     capture(ANALYTICS_EVENTS.PAGE_VIEWED, { page: tabName });
   };
@@ -55,18 +54,6 @@ export function MainTabs() {
           style={tabPanelStyle}
         >
           <MultisampleTool />
-        </div>
-      )}
-      
-      {state.currentTab === 'feedback' && (
-        <div
-          role="tabpanel"
-          id="feedback-tabpanel"
-          aria-labelledby="feedback-tab"
-          aria-label="feedback and support content"
-          style={tabPanelStyle}
-        >
-          <FeedbackPage />
         </div>
       )}
       

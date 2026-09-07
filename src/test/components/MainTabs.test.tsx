@@ -26,7 +26,7 @@ describe('MainTabs', () => {
     
     // Check that all tabs are present with proper ARIA attributes
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(5); // drum, multisample, library, desktop app, feedback
+    expect(tabs).toHaveLength(4); // drum, multisample, library, desktop app
     
     // Check that each tab has proper ARIA attributes
     tabs.forEach(tab => {
@@ -63,7 +63,7 @@ describe('MainTabs', () => {
     renderWithContext();
     
     const tabs = screen.getAllByRole('tab');
-    const expectedTabNames = ['drum tab', 'multisample tab', 'library tab', 'desktop app tab', 'feedback tab'];
+    const expectedTabNames = ['drum tab', 'multisample tab', 'library tab', 'desktop app tab'];
     
     // Check that tabs are in the correct order
     tabs.forEach((tab, index) => {

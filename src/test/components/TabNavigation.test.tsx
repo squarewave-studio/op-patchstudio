@@ -27,7 +27,7 @@ describe('TabNavigation', () => {
     
     // Check that all tabs are present
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(5); // drum, multisample, library, desktop app, feedback
+    expect(tabs).toHaveLength(4); // drum, multisample, library, desktop app
     
     // Check that each tab has proper ARIA attributes
     tabs.forEach(tab => {
@@ -63,9 +63,9 @@ describe('TabNavigation', () => {
     
     vi.clearAllMocks();
     
-    // Test left arrow (should wrap to feedback)
+    // Test left arrow (should wrap to the last tab)
     fireEvent.keyDown(drumTab, { key: 'ArrowLeft' });
-    expect(mockOnTabChange).toHaveBeenCalledWith('feedback');
+    expect(mockOnTabChange).toHaveBeenCalledWith('desktop');
   });
 
   it('should handle Home and End key navigation', () => {
@@ -81,7 +81,7 @@ describe('TabNavigation', () => {
     
     // Test End key
     fireEvent.keyDown(multisampleTab, { key: 'End' });
-    expect(mockOnTabChange).toHaveBeenCalledWith('feedback');
+    expect(mockOnTabChange).toHaveBeenCalledWith('desktop');
   });
 
   it('should handle Enter and Space key activation', () => {
@@ -123,7 +123,7 @@ describe('TabNavigation', () => {
     render(<TabNavigation currentTab="drum" onTabChange={mockOnTabChange} />);
     
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(4); // drum, multisample, library, feedback (no desktop app)
+    expect(tabs).toHaveLength(3); // drum, multisample, library (no desktop app)
     
     // Check that the desktop app tab is not present
     expect(screen.queryByRole('tab', { name: 'desktop app tab' })).not.toBeInTheDocument();
