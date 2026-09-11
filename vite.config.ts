@@ -94,12 +94,10 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
       reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: [
-        'node_modules/',
         'src/test/',
         '**/*.d.ts',
-        '**/*.config.*',
-        'dist/'
       ]
     }
   }

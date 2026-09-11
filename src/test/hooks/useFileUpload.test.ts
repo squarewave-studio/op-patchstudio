@@ -1,20 +1,16 @@
 import { renderHook, act } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useAppContext } from '../../context/AppContext';
 import { createCompleteMultisampleSettings } from '../utils/testHelpers';
+import { readAudioMetadata, type AudioMetadata } from '../../utils/audioFormats';
 
 // Mock the AppContext
 vi.mock('../../context/AppContext');
 
-// Mock the audio utilities
-vi.mock('../../utils/audio', () => ({
-  parseFilename: vi.fn(),
-  midiNoteToString: vi.fn(),
-  audioBufferToWav: vi.fn(),
-  createAudioBuffer: vi.fn(),
-  extractAudioMetadata: vi.fn(),
-  readWavMetadata: vi.fn()
+// Mock the metadata boundary used by the hook.
+vi.mock('../../utils/audioFormats', () => ({
+  readAudioMetadata: vi.fn()
 }));
 
 // Mock the session storage
@@ -31,6 +27,20 @@ vi.mock('../../utils/sessionStorageIndexedDB', () => ({
 
 describe('useFileUpload', () => {
   const mockDispatch = vi.fn();
+  const mockAudioBuffer = {} as AudioBuffer;
+  const mockMetadata: AudioMetadata = {
+    format: 'wav',
+    sampleRate: 44100,
+    bitDepth: 16,
+    channels: 2,
+    duration: 1,
+    audioBuffer: mockAudioBuffer,
+    fileSize: 1024,
+    midiNote: 60,
+    loopStart: 0,
+    loopEnd: 1,
+    hasLoopData: false
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -76,6 +86,10 @@ describe('useFileUpload', () => {
     });
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should provide expected functions', () => {
     const { result } = renderHook(() => useFileUpload())
     
@@ -86,6 +100,7 @@ describe('useFileUpload', () => {
   })
 
   it('should handle drum sample upload calls', async () => {
+    vi.mocked(readAudioMetadata).mockResolvedValueOnce(mockMetadata);
     const { result } = renderHook(() => useFileUpload())
     const mockFile = new File(['mock audio data'], 'test.wav', { type: 'audio/wav' })
     
@@ -93,11 +108,18 @@ describe('useFileUpload', () => {
       await result.current.handleDrumSampleUpload(mockFile, 0)
     })
     
-    // Should have called dispatch at least once
-    expect(mockDispatch).toHaveBeenCalled()
+    expect(readAudioMetadata).toHaveBeenCalledWith(mockFile, 'C3')
+    expect(mockDispatch).toHaveBeenNthCalledWith(1, { type: 'SET_LOADING', payload: true })
+    expect(mockDispatch).toHaveBeenNthCalledWith(2, { type: 'SET_ERROR', payload: null })
+    expect(mockDispatch).toHaveBeenNthCalledWith(3, {
+      type: 'LOAD_DRUM_SAMPLE',
+      payload: { index: 0, file: mockFile, audioBuffer: mockAudioBuffer, metadata: mockMetadata }
+    })
+    expect(mockDispatch).toHaveBeenNthCalledWith(4, { type: 'SET_LOADING', payload: false })
   })
 
   it('should handle multisample upload calls', async () => {
+    vi.mocked(readAudioMetadata).mockResolvedValueOnce(mockMetadata);
     const { result } = renderHook(() => useFileUpload())
     const mockFile = new File(['mock audio data'], 'C4.wav', { type: 'audio/wav' })
     
@@ -105,14 +127,22 @@ describe('useFileUpload', () => {
       await result.current.handleMultisampleUpload(mockFile, 60)
     })
     
-    // Should have called dispatch at least once
-    expect(mockDispatch).toHaveBeenCalled()
+    expect(readAudioMetadata).toHaveBeenCalledWith(mockFile, 'C3')
+    expect(mockDispatch).toHaveBeenNthCalledWith(3, {
+      type: 'LOAD_MULTISAMPLE_FILE',
+      payload: {
+        file: mockFile,
+        audioBuffer: mockAudioBuffer,
+        metadata: mockMetadata,
+        rootNoteOverride: 60
+      }
+    })
+    expect(mockDispatch).toHaveBeenLastCalledWith({ type: 'SET_LOADING', payload: false })
   })
 
   it('should handle errors during upload', async () => {
-    // Mock readWavMetadata to throw an error
-    const { readWavMetadata } = await import('../../utils/audio');
-    vi.mocked(readWavMetadata).mockRejectedValueOnce(new Error('Invalid audio file'))
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.mocked(readAudioMetadata).mockRejectedValueOnce(new Error('Invalid audio file'))
 
     const { result } = renderHook(() => useFileUpload())
     const mockFile = new File(['invalid data'], 'test.txt', { type: 'text/plain' })
@@ -121,12 +151,29 @@ describe('useFileUpload', () => {
       await result.current.handleDrumSampleUpload(mockFile, 0)
     })
     
-    // Should have called dispatch to set error state
-    expect(mockDispatch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'SET_ERROR'
-      })
-    )
+    expect(mockDispatch).toHaveBeenNthCalledWith(3, {
+      type: 'SET_ERROR',
+      payload: 'Invalid audio file'
+    })
+    expect(mockDispatch).toHaveBeenLastCalledWith({ type: 'SET_LOADING', payload: false })
+    expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'LOAD_DRUM_SAMPLE' }))
+  })
+
+  it('should use a safe error message for non-Error failures', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.mocked(readAudioMetadata).mockRejectedValueOnce('unreadable file')
+
+    const { result } = renderHook(() => useFileUpload())
+
+    await act(async () => {
+      await result.current.handleMultisampleUpload(new File([], 'broken.wav'))
+    })
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_ERROR',
+      payload: 'Failed to load audio file'
+    })
+    expect(mockDispatch).toHaveBeenLastCalledWith({ type: 'SET_LOADING', payload: false })
   })
 
   it('should provide clear functions that call dispatch', () => {
